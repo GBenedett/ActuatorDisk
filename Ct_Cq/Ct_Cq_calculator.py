@@ -46,8 +46,8 @@ for v in range(1, 61):
         rad = r1[j]
         # calculate local blade element setting angle
         theta = atan(pitch / 2 / pi / rad)
-        # calculate solidity
-        sigma = 2 * chord / 2 / pi / rad
+
+        solidity = 2 * chord / 2 / pi / rad
         # guess initial value of inflow and swirl factor
         a = 0.1
         b = 0.01
