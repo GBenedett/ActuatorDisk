@@ -10,13 +10,13 @@ from math import atan2
 import matplotlib.pyplot as plt
 import numpy as np
 
-chord = 0.1
+chord = 0.10
 # pitch distance in meters
-pitch = 1
+pitch = 1.0
 # diameter of propeller in meters
 dia = 1.6
 # tip radius
-R = dia / 2
+R = dia / 2.0
 # engine speed
 RPM = 2100
 # thickness to chord ratio for propelle section (costant with radius)
@@ -26,28 +26,28 @@ rho = 1.225
 # RPM --> revs
 n = RPM/60
 # rps --> rads per second
-omega = n * 2 * pi
+omega = n * 2.0 * pi
 # n blade propeller
 B = 2
 # use 10 blade segments (starting a 10%R to R)
-xs = float(f'{(0.1*R):.2f}')
+xs = 0.1*R
 xt = R
 rstep = (xt-xs)/10
-r1 = np.arange(xs,(xt+rstep),rstep)
+r1 = np.arange(xs,(xt+0.01),rstep)
 
-# velocity initialization
+# initializations
 t = np.array([])
 q = np.array([])
 J = np.array([])
 eff = np.array([])
 V = np.array([])
-vax = np.array([])
+Vax = np.array([])
 ## Calculation
 
 # velocity step
 for V in range(1,61):
-    thrust = 0
-    torque = 0
+    thrust = 0.0
+    torque = 0.0
     for j in range(len(r1+1)):
         rad = r1[j]
         # calculate local blade element setting angle
@@ -77,7 +77,7 @@ for V in range(1,61):
             # local velocity at blade
             Vlocal = sqrt(V0**2 + V2**2)
             # thrust grading 
-            DtDr = 0.5*rho*Vlocal**2*B*chord*(cl*cos(phi)+cd*sin(phi))
+            DtDr = 0.5*rho*Vlocal**2*B*chord*(cl*cos(phi)-cd*sin(phi))
             # torque grading 
             DqDr = 0.5*rho*Vlocal**2*B*chord*rad*(cd*cos(phi)+cl*sin(phi))
             # momentum check on inflow and swirl factors
@@ -86,6 +86,7 @@ for V in range(1,61):
             # stabilise iteration 
             anew = 0.5*(a+tem1)
             bnew = 0.5*(b+tem2)
+            
             # check for convergence
             if (abs(anew-a)<1e-5):
                 if(abs(bnew-b)<1e-5):
@@ -100,22 +101,24 @@ for V in range(1,61):
             # check to see if iteration stuck
             if (sum>500):
                 finished = True
-                vax = np.append(vax, V0)
-                # Displaying the array
-                print('Array:\n', vax)
-                file = open("file1.txt", "w+")
                 
-                # Saving the array in a text file
-                content = str(vax)
-                file.write(content)
-                file.close()
-                
-                # Displaying the contents of the text file
-                file = open("file1.txt", "r")
-                content = file.read()
-                
-                print("\nContent in file1.txt:\n", content)
-                file.close()
+                ## to see vector velocity
+                #Vax = np.append(Vax, V0)
+                ## Displaying the array
+                #print('Array:\n', Vax)
+                #file = open("file1.txt", "w+")
+                #
+                ## Saving the array in a text file
+                #content = str(Vax)
+                #file.write(content)
+                #file.close()
+                #
+                ## Displaying the contents of the text file
+                #file = open("file1.txt", "r")
+                #content = file.read()
+                #
+                #print("\nContent in file1.txt:\n", content)
+                #file.close()
 
         thrust = thrust + DtDr * rstep
         torque = torque + DqDr * rstep
@@ -128,6 +131,7 @@ eff=np.append(eff, J/2.0/pi*t/q)
 
 Jmax=max(J) 
 Tmax=max(t)
+Effmax=max(eff)
 
 # print(len(r1))
 # print(f"a={a}")
@@ -155,6 +159,11 @@ Tmax=max(t)
 # print(f"Jmax={Jmax}")
 # print(len(J))
 # print(len(eff))
+# print(len(r1))
+# print(r1)
+# print(f"anew={anew}")
+# print(f"bnew={bnew}")
+            
 
 plt.plot(J,t, label='Ct')
 plt.plot(J,q,label='Cq')
