@@ -23,7 +23,6 @@ References
 
 [https://www.grc.nasa.gov/WWW/K-12/airplane/turbprp.html]
 
-<<<<<<< HEAD:Articles.md
 [https://royalsocietypublishing.org/doi/abs/10.1098/rspa.1929.0078]
 
 [https://github.com/su2code/Tutorials/tree/feature_tutorial_ActuatorDisk/compressible_flow/ActuatorDisk_VariableLoad]
@@ -31,6 +30,5 @@ References
 [https://www.researchgate.net/publication/279213459_A_comparison_of_nonlinear_actuator_disk_methods_for_the_performance_analysis_of_ducted_marine_propellers]
 
 Andrea Poyer, "Methods for propeller simulation", FH Wiener Neustadt
-=======
+
 Saeed Farokhi, 2014, "Aircraft propulsion", second edition
->>>>>>> e1a05879243f2dacd41beb512a8e552bcffaa485:References.md
