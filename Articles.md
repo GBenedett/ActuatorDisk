@@ -17,8 +17,6 @@ Useful articles and websites
 
 [https://su2code.github.io/tutorials/home/]
 
-[https://www.e-education.psu.edu/aersp583/node/470]
-
 [https://www.sciencedirect.com/topics/engineering/actuator-disc-method]
 
 [https://link.springer.com/content/pdf/10.1007/BF00411983.pdf]
