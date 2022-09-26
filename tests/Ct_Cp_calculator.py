@@ -97,28 +97,9 @@ for V in range(1,61):
 
             # increment iteration count
             sum = sum + 1
-            # print(f"Sum={sum}")
             # check to see if iteration stuck
             if (sum>500):
                 finished = True
-                
-                ## to see vector velocity
-                #Vax = np.append(Vax, V0)
-                ## Displaying the array
-                #print('Array:\n', Vax)
-                #file = open("file1.txt", "w+")
-                #
-                ## Saving the array in a text file
-                #content = str(Vax)
-                #file.write(content)
-                #file.close()
-                #
-                ## Displaying the contents of the text file
-                #file = open("file1.txt", "r")
-                #content = file.read()
-                #
-                #print("\nContent in file1.txt:\n", content)
-                #file.close()
 
         thrust = thrust + DtDr * rstep
         torque = torque + DqDr * rstep
@@ -130,40 +111,7 @@ for V in range(1,61):
 eff=np.append(eff, J/2.0/pi*t/q)
 
 Jmax=max(J) 
-Tmax=max(t)
-Effmax=max(eff)
-
-# print(len(r1))
-# print(f"a={a}")
-# print(f"b={b}")
-# print(f"t={t}")
-# print(f"q={q}")
-# print(f"V2={V2}")
-# print(f"V0={V0}")
-# print(f"Vloc={Vlocal}")
-# print(f"J={J}")
-# print(f"sigma={sigma}")
-# print(f"cd={cd}")
-# print(f"phi={phi}")
-# print(f"alpha={alpha}")
-# print(f"theta={theta}")
-# print(f"dq={DqDr}")
-# print(f"dt={DtDr}")   
-# print(f"omega={omega}")
-# print(f"tem1={tem1}")
-# print(f"tem2={tem2}")   
-# print(f"eff={eff}")
-# print(f"thrust={thrust}")
-# print(f"torque={torque}")
-# print(f"Tmax={Tmax}")
-# print(f"Jmax={Jmax}")
-# print(len(J))
-# print(len(eff))
-# print(len(r1))
-# print(r1)
-# print(f"anew={anew}")
-# print(f"bnew={bnew}")
-            
+Tmax=max(t) 
 
 plt.plot(J,t, label='Ct')
 plt.plot(J,q,label='Cq')
