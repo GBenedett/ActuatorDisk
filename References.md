@@ -1,4 +1,4 @@
-Useful articles and websites
+References
 ==============================
 
 [https://www.nas.nasa.gov/assets/nas/pdf/ams/2022/AMS_20220825_Stich.pdf]
@@ -22,3 +22,5 @@ Useful articles and websites
 [https://link.springer.com/content/pdf/10.1007/BF00411983.pdf]
 
 [https://www.grc.nasa.gov/WWW/K-12/airplane/turbprp.html]
+
+Saeed Farokhi, 2014, "Aircraft propulsion", second edition
