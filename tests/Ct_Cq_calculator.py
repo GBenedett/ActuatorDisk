@@ -1,6 +1,5 @@
-# Ct and Cp calculator
+## Ct and Cq calculator ##
 
-## Input
 # chord length of blade assumed costant with radius
 from array import array
 from cProfile import label
