@@ -9,6 +9,13 @@ from math import atan2
 import matplotlib.pyplot as plt
 import numpy as np
 
+# initializations
+thrust_coefficient = np.array([])
+torque_coefficent = np.array([])
+advanced_ratio = np.array([])
+efficiency = np.array([])
+v = np.array([])
+
 # input
 chord = 0.10  # [m]
 pitch = 1.0  # [m]
@@ -17,18 +24,13 @@ rpm = 2100
 rho = 1.225  # [kg/m^2]
 blade_numbers = 2
 
-# initializations
-thrust_coefficient = np.array([])
-torque_coefficent = np.array([])
-J = np.array([])
-efficiency = np.array([])
-v = np.array([])
-
 ## Calculation
+
 radius = diameter / 2.0
 tickness_chord_ratio = 0.12 * chord
 n = rpm / 60
 omega = n * 2.0 * pi
+
 # use 10 blade segments (starting a 10%R to R)
 xs = 0.1 * radius
 xt = radius
@@ -59,7 +61,6 @@ for v in range(1, 61):
             alpha = theta - phi
             cl = 6.2 * alpha
             cd = 0.008 - 0.003 * cl + 0.01 * cl**2
-            # local velocity at blade
             local_velocity = sqrt(
                 axial_inflow_velocity**2 + angular_inflow_velocity**2
             )
@@ -82,12 +83,12 @@ for v in range(1, 61):
                 * rad
                 * (cd * cos(phi) + cl * sin(phi))
             )
-            # momentum check on inflow and swirl factors
-            tem1 = DtDr / (4 * pi * rad * rho * v**2 * (1 + a))
-            tem2 = DqDr / (4 * pi * rad**3 * rho * v * (1 + a) * omega)
+            # momentum conservation check
+            axial_momentum = DtDr / (4 * pi * rad * rho * v**2 * (1 + a))
+            angular_momentum = DqDr / (4 * pi * rad**3 * rho * v * (1 + a) * omega)
             # stabilise iteration
-            anew = 0.5 * (a + tem1)
-            bnew = 0.5 * (b + tem2)
+            anew = 0.5 * (a + axial_momentum)
+            bnew = 0.5 * (b + angular_momentum)
 
             # check for convergence
             if abs(anew - a) < 1e-5:
@@ -99,7 +100,6 @@ for v in range(1, 61):
 
             sum = sum + 1
 
-            # check to see if iteration stuck
             if sum > 500:
                 finished = True
 
@@ -113,18 +113,18 @@ for v in range(1, 61):
     torque_coefficent = np.append(
         torque_coefficent, torque / (rho * n**2 * diameter**5)
     )
-    J = np.append(J, v / (n * diameter))
+    advanced_ratio = np.append(advanced_ratio, v / (n * diameter))
 efficiency = np.append(
-    efficiency, J / 2.0 / pi * thrust_coefficient / torque_coefficent
+    efficiency, advanced_ratio / 2.0 / pi * thrust_coefficient / torque_coefficent
 )
 
-Jmax = max(J)
-Tmax = max(thrust_coefficient)
+advanced_ratio_max = max(advanced_ratio)
+thrust_max = max(thrust_coefficient)
 
-plt.plot(J, thrust_coefficient, label="Ct")
-plt.plot(J, torque_coefficent, label="Cq")
-plt.xlim(0, Jmax)
-plt.ylim(0, 1.1 * Tmax)
+plt.plot(advanced_ratio, thrust_coefficient, label="Ct")
+plt.plot(advanced_ratio, torque_coefficent, label="Cq")
+plt.xlim(0, advanced_ratio_max)
+plt.ylim(0, 1.1 * thrust_max)
 
 plt.title("Thrust and Torque Coefficients")
 plt.xlabel("Advance Ratio (J)")
@@ -132,10 +132,10 @@ plt.ylabel("Ct, Cq")
 plt.legend()
 plt.show()
 
-plt.plot(J, efficiency)
+plt.plot(advanced_ratio, efficiency)
 plt.title("Propeller Efficiency")
 plt.xlabel("Advance Ratio (J)")
 plt.ylabel("Efficiency")
-plt.xlim(0, Jmax)
+plt.xlim(0, advanced_ratio_max)
 plt.ylim(0, 1)
 plt.show()
