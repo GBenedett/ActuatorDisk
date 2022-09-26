@@ -24,6 +24,7 @@ rpm = 2100
 rho = 1.225  # [kg/m^2]
 blade_numbers = 2
 
+
 ## Calculation
 
 radius = diameter / 2.0
