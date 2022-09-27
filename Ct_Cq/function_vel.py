@@ -1,9 +1,11 @@
-from math import atan, cos, e, pi, sin, sqrt
+from math import cos, pi, sin, sqrt
 from math import atan2
 
+MAXITER = 500
 
-def convergence(a, b, sum, v, omega, rad, theta, rho, blade_numbers, chord, finished):
-    while not finished:
+
+def convergence(a, b, v, omega, rad, theta, rho, blade_numbers, chord):
+    for _ in range(1, MAXITER + 1):
         axial_inflow_velocity = v * (1 + a)
         angular_inflow_velocity = omega * rad * (1 - b)
         # flow angle
@@ -38,33 +40,12 @@ def convergence(a, b, sum, v, omega, rad, theta, rho, blade_numbers, chord, fini
         # stabilise iteration
         anew = 0.5 * (a + axial_momentum)
         bnew = 0.5 * (b + angular_momentum)
-        # momentum conservation check
 
         # check for convergence
-        if abs(anew - a) < 1e-5:
-            if abs(bnew - b) < 1e-5:
-                finished == True
+        if abs(anew - a) < 1e-5 and abs(bnew - b) < 1e-5:
+            break
 
         a = anew
         b = bnew
 
-        sum = sum + 1
-
-        if sum > 500:
-            finished = True
-
-    return (
-        axial_inflow_velocity,
-        angular_inflow_velocity,
-        phi,
-        alpha,
-        cl,
-        cd,
-        local_velocity,
-        DtDr,
-        DqDr,
-        axial_momentum,
-        angular_momentum,
-        anew,
-        bnew,
-    )
+    return DtDr, DqDr
