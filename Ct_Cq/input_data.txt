@@ -1,0 +1,8 @@
+# input
+
+chord = 0.10  # [m]
+pitch = 1.0  # [m]
+diameter = 1.6  # [m]
+rpm = 2100
+rho = 1.225  # [kg/m^2]
+blade_numbers = 2
