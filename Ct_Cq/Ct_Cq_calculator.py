@@ -9,14 +9,11 @@ import numpy as np
 from function_vel import convergence
 from initialization import init_calc
 
-import pandas as pd
-
 ## initializations
-thrust_coefficient = np.array([])
-torque_coefficent = np.array([])
-advanced_ratio = np.array([])
+thrust_coefficient = np.empty(61)
+torque_coefficent = np.empty(61)
+advanced_ratio = np.empty(61)
 efficiency = np.array([])
-v = np.array([])
 
 # input
 chord = 0.10  # [m]
@@ -46,27 +43,29 @@ for v in range(1, v_max + 1):
 
         thrust += DtDr * rstep
         torque += DqDr * rstep
-
-    thrust_coefficient = np.append(
-        thrust_coefficient, thrust / (rho * n**2 * diameter**4)
-    )
-    torque_coefficent = np.append(
-        torque_coefficent, torque / (rho * n**2 * diameter**5)
-    )
-    advanced_ratio = np.append(advanced_ratio, v / (n * diameter))
+    thrust_coefficient[v] = thrust / (rho * n**2 * diameter**4)
+    torque_coefficent[v] = torque / (rho * n**2 * diameter**5)
+    advanced_ratio[v] = v / (n * diameter)
+thrust_coefficient = np.delete(thrust_coefficient, 0)
+torque_coefficent = np.delete(torque_coefficent, 0)
+print(advanced_ratio)
+advanced_ratio = np.delete(advanced_ratio, 0)
 
 efficiency = np.append(
     efficiency, advanced_ratio / 2.0 / pi * thrust_coefficient / torque_coefficent
 )
+efficiency[[efficiency <= 0] and [efficiency > 1]] = -1
+
 advanced_ratio_max = max(advanced_ratio)
 thrust_max = max(thrust_coefficient)
 
-plt.figure(figsize=(6, 9))
+plt.figure(figsize=(7, 8))
 
 plt.subplot(2, 1, 1)
+plt.suptitle("Thrust coefficent, torque coeffcient and propeller efficiency")
 plt.plot(advanced_ratio, thrust_coefficient, label="Ct")
 plt.plot(advanced_ratio, torque_coefficent, label="Cq")
-plt.xlim(0, advanced_ratio_max)
+plt.xlim(0, 0.65)
 plt.ylim(0, 1.1 * thrust_max)
 plt.title("Thrust and Torque Coefficients")
 plt.xlabel("Advance Ratio (J)")
@@ -78,7 +77,7 @@ plt.plot(advanced_ratio, efficiency)
 plt.title("Propeller Efficiency")
 plt.xlabel("Advance Ratio (J)")
 plt.ylabel("Efficiency")
-plt.xlim(0, advanced_ratio_max)
+plt.xlim(0, 0.65)
 plt.ylim(0, 1)
 
 
