@@ -1,6 +1,8 @@
 ## Ct and Cq calculator ##
 
 # chord length of blade assumed costant with radius
+import pandas as pd
+
 from math import atan, pi
 
 import matplotlib.pyplot as plt
@@ -15,14 +17,17 @@ torque_coefficent = np.empty(61)
 advanced_ratio = np.empty(61)
 efficiency = np.array([])
 
-# input
-chord = 0.10  # [m]
-pitch = 1.0  # [m]
-diameter = 1.6  # [m]
-rpm = 2100
-rho = 1.225  # [kg/m^2]
-blade_numbers = 2
-v_max = 60
+## input
+# chord = 0.10  # [m]
+# pitch = 1.0  # [m]
+# diameter = 1.6  # [m]
+# rpm = 2100
+# rho = 1.225  # [kg/m^2]
+# blade_numbers = 2
+# v_max = 60
+
+dataset = pd.read_csv("input_data.csv")
+print(dataset)
 
 xs, xt, r1, rstep, omega, n = init_calc(diameter, rpm)
 
@@ -46,14 +51,15 @@ for v in range(1, v_max + 1):
     thrust_coefficient[v] = thrust / (rho * n**2 * diameter**4)
     torque_coefficent[v] = torque / (rho * n**2 * diameter**5)
     advanced_ratio[v] = v / (n * diameter)
-thrust_coefficient = np.delete(thrust_coefficient, 0)
+
 torque_coefficent = np.delete(torque_coefficent, 0)
-print(advanced_ratio)
+thrust_coefficient = np.delete(thrust_coefficient, 0)
 advanced_ratio = np.delete(advanced_ratio, 0)
 
 efficiency = np.append(
     efficiency, advanced_ratio / 2.0 / pi * thrust_coefficient / torque_coefficent
 )
+
 efficiency[[efficiency <= 0] and [efficiency > 1]] = -1
 
 advanced_ratio_max = max(advanced_ratio)
