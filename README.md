@@ -12,3 +12,5 @@ Actuator disk theory
 --------------------
 
 Will come soon
+
+For the [References](./References.md), please read the file
