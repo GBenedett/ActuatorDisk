@@ -20,14 +20,14 @@ df = pd.read_csv("input_data.csv", skiprows=1)
 
 chord, pitch, diameter, rpm, rho, blade_numbers, v_max = df.iloc[:, 1]
 
-xs, xt, r1, rstep, omega, n = init_calc(diameter, rpm)
+r_hub, r_tip, steps_vector, rstep, omega, n = init_calc(diameter, rpm)
 
 # velocity step
 for v in range(1, int(v_max + 1)):
     thrust = 0.0
     torque = 0.0
-    for j in range(len(r1 + 1)):
-        rad = r1[j]
+    for j in range(len(steps_vector + 1)):
+        rad = steps_vector[j]
         # calculate local blade element setting angle
         theta = atan(pitch / 2 / pi / rad)
 
