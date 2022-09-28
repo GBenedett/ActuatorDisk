@@ -1,12 +1,11 @@
 ## Ct and Cq calculator ##
 
 # chord length of blade assumed costant with radius
-import pandas as pd
-
 from math import atan, pi
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 from function_vel import convergence
 from initialization import init_calc
@@ -17,17 +16,11 @@ torque_coefficent = np.empty(61)
 advanced_ratio = np.empty(61)
 efficiency = np.array([])
 
-## input
-# chord = 0.10  # [m]
-# pitch = 1.0  # [m]
-# diameter = 1.6  # [m]
-# rpm = 2100
-# rho = 1.225  # [kg/m^2]
-# blade_numbers = 2
-# v_max = 60
+v_max = 60
 
-dataset = pd.read_csv("input_data.csv")
-print(dataset)
+df = pd.read_csv("input_data.csv", skiprows=1)
+
+chord, pitch, diameter, rpm, rho, blade_numbers = df.iloc[:, 1]
 
 xs, xt, r1, rstep, omega, n = init_calc(diameter, rpm)
 
