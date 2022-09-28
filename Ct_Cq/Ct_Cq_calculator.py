@@ -16,16 +16,14 @@ torque_coefficent = np.empty(61)
 advanced_ratio = np.empty(61)
 efficiency = np.array([])
 
-v_max = 60
-
 df = pd.read_csv("input_data.csv", skiprows=1)
 
-chord, pitch, diameter, rpm, rho, blade_numbers = df.iloc[:, 1]
+chord, pitch, diameter, rpm, rho, blade_numbers, v_max = df.iloc[:, 1]
 
 xs, xt, r1, rstep, omega, n = init_calc(diameter, rpm)
 
 # velocity step
-for v in range(1, v_max + 1):
+for v in range(1, int(v_max + 1)):
     thrust = 0.0
     torque = 0.0
     for j in range(len(r1 + 1)):
