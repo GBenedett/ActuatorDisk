@@ -3,12 +3,12 @@
 # chord length of blade assumed costant with radius
 from math import atan, pi
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
 from function_vel import convergence
 from initialization import init_calc
+from fplot import plot_function
 
 ## initializations
 thrust_coefficient = np.empty(61)
@@ -16,7 +16,9 @@ torque_coefficent = np.empty(61)
 advanced_ratio = np.empty(61)
 efficiency = np.array([])
 
-df = pd.read_csv("input_data.csv", skiprows=1)
+df = pd.read_csv(
+    f"/home/cfse/Stage_Giacomo/ActuatorDisk/Ct_Cq/input_data.csv", skiprows=1
+)
 
 chord, pitch, diameter, rpm, rho, blade_numbers, v_max = df.iloc[:, 1]
 
@@ -51,32 +53,9 @@ efficiency = np.append(
     efficiency, advanced_ratio / 2.0 / pi * thrust_coefficient / torque_coefficent
 )
 
-efficiency[[efficiency <= 0] and [efficiency > 1]] = -1
-
 advanced_ratio_max = max(advanced_ratio)
 thrust_max = max(thrust_coefficient)
 
-plt.figure(figsize=(7, 8))
-
-plt.subplot(2, 1, 1)
-plt.suptitle("Thrust coefficent, torque coeffcient and propeller efficiency")
-plt.plot(advanced_ratio, thrust_coefficient, label="Ct")
-plt.plot(advanced_ratio, torque_coefficent, label="Cq")
-plt.xlim(0, 0.65)
-plt.ylim(0, 1.1 * thrust_max)
-plt.title("Thrust and Torque Coefficients")
-plt.xlabel("Advance Ratio (J)")
-plt.ylabel("Ct, Cq")
-plt.legend()
-
-plt.subplot(2, 1, 2)
-plt.plot(advanced_ratio, efficiency)
-plt.title("Propeller Efficiency")
-plt.xlabel("Advance Ratio (J)")
-plt.ylabel("Efficiency")
-plt.xlim(0, 0.65)
-plt.ylim(0, 1)
-
-
-plt.tight_layout(pad=1.2)
-plt.show()
+plot_function(
+    advanced_ratio, thrust_coefficient, torque_coefficent, thrust_max, efficiency
+)
