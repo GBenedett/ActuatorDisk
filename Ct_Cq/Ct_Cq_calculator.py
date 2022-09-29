@@ -16,9 +16,7 @@ torque_coefficent = np.empty(61)
 advanced_ratio = np.empty(61)
 efficiency = np.array([])
 
-df = pd.read_csv(
-    f"/home/cfse/Stage_Giacomo/ActuatorDisk/Ct_Cq/input_data.csv", skiprows=1
-)
+df = pd.read_csv("input_data.csv", skiprows=1)
 
 chord, pitch, diameter, rpm, rho, blade_numbers, v_max = df.iloc[:, 1]
 
