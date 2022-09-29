@@ -37,9 +37,12 @@ for v in range(1, int(v_max + 1)):
         # guess initial value of inflow and swirl factor
         a = 0.1
         b = 0.01
+
         DtDr, DqDr = convergence(a, b, v, omega, rad, theta, rho, blade_numbers, chord)
+
         thrust += DtDr * rstep
         torque += DqDr * rstep
+
     thrust_coefficient[v] = thrust / (rho * n**2 * diameter**4)
     torque_coefficent[v] = torque / (rho * n**2 * diameter**5)
     advanced_ratio[v] = v / (n * diameter)
