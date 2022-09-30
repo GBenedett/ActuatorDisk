@@ -5,9 +5,10 @@ def plot_function(
     advanced_ratio, thrust_coefficient, torque_coefficent, thrust_max, efficiency
 ):
 
-    efficiency[[efficiency <= 0] and [efficiency > 1]] = -1
+    efficiency[efficiency <= 0] = -1
+    efficiency[efficiency > 1] = -1
 
-    plt.figure(figsize=(7, 8))
+    plt.figure(figsize=(6.5, 7))
 
     plt.subplot(2, 1, 1)
     plt.suptitle(
