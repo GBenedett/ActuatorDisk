@@ -18,7 +18,14 @@ def velocity_corr(
         cd = 0.008 - 0.003 * cl + 0.01 * cl**2
         local_velocity = sqrt(axial_velocity**2 + rotational_velocity**2)
 
-        dT = 0.5 * rho * local_velocity**2 * chord * (cl * cos(phi) - cd * sin(phi))
+        dT = (
+            0.5
+            * rho
+            * local_velocity**2
+            * blade_numbers
+            * chord
+            * (cl * cos(phi) - cd * sin(phi))
+        )
         dQ = (
             0.5
             * rho
@@ -28,6 +35,7 @@ def velocity_corr(
             * dr
             * (cd * cos(phi) + cl * sin(phi))
         )
+        dP = dT * local_velocity
 
         axial_momentum = dT / (4 * pi * dr * rho * free_stream_velocity**2 * (1 + a))
         angular_momentum = dQ / (
@@ -43,4 +51,4 @@ def velocity_corr(
         a = anew
         b = bnew
 
-    return dT, dQ, local_velocity
+    return dT, dQ, dP, local_velocity

@@ -26,18 +26,18 @@ blade_numbers = 2
 r_hub = 0.1 * radius
 r_tip = radius
 r_step = (r_tip - r_hub) / n_step
-step_vector = np.arange(r_hub, (r_tip + 0.01), r_step)
+steps_vector = np.arange(r_hub, (r_tip + 0.01), r_step)
 n = rpm / 60
 omega = 2 * pi * n
 
 # calculation
 
-for i in range(len(step_vector + 1)):
+for i in range(len(steps_vector + 1)):
 
     blade_thrust = 0.0
     blade_torque = 0.0
 
-    dr = step_vector[i]
+    dr = steps_vector[i]
     theta = atan(pitch / 2 / pi / dr)
 
     a = 0.1
@@ -76,13 +76,13 @@ plt.suptitle(
     size=13,
 )
 
-plt.plot(step_vector, delta_thrust)
+plt.plot(steps_vector, delta_thrust)
 plt.title("dT vs x/r")
 plt.xlabel("x/r")
 plt.ylabel("dT")
 
 plt.subplot(2, 2, 2)
-plt.plot(step_vector, thrust_coefficient_dr)
+plt.plot(steps_vector, thrust_coefficient_dr)
 plt.title("thrust_coefficient(r) vs x/r")
 plt.xlabel("x/r")
 plt.ylabel("thrust_coefficient")
