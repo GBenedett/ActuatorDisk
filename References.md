@@ -32,3 +32,5 @@ References
 Andrea Poyer, "Methods for propeller simulation", FH Wiener Neustadt
 
 Saeed Farokhi, 2014, "Aircraft propulsion", second edition
+
+[https://www.researchgate.net/publication/352295621_A_method_for_preliminary_rotor_design_-_Part_1_Radially_Independent_Actuator_Disc_model]
