@@ -48,4 +48,4 @@ def convergence(a, b, v, omega, rad, theta, rho, blade_numbers, chord):
         a = anew
         b = bnew
 
-    return DtDr, DqDr
+    return DtDr, DqDr, local_velocity
