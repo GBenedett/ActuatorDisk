@@ -3,9 +3,9 @@ from math import atan, pi
 import numpy as np
 import pandas as pd
 
-from fplot import plot_function
-from initialization import init_calc
-from velocity_correction import velocity_corr
+from fun_plot import plot_function
+from fun_initialization import init_calc
+from fun_velocity_correction import velocity_corr
 
 ## initializations
 total_thrust_coefficient = np.empty(101)

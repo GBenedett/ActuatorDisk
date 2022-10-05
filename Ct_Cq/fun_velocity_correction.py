@@ -5,7 +5,7 @@ from math import atan2, cos, sin, sqrt, pi
 MAXITER = 500
 
 
-def velocity_corr(
+def velocity_correction(
     free_stream_velocity, a, b, omega, dr, theta, rho, blade_numbers, chord
 ):
 

@@ -9,17 +9,16 @@ alpha_f = np.array([])
 phi_f = np.array([])
 cd_f = np.array([])
 cl_f = np.array([])
-Ct2 = np.array([])
 total_thrust_coefficient = np.array([])
 
 # input
 
 radius = 2.52  # [m]
-rho = 1  # [kg/m^3]
+rho = 1.225  # [kg/m^3]
 free_stream_velocity = 231.5  # [m/s]
 n_step = 10
 chord_f = np.array(
-    [0.18, 0.2, 0.22, 0.25, 0.28, 0.3, 0.3, 0.32, 0.31, 0.24, 0.15]
+    [0.2, 0.22, 0.24, 0.26, 0.28, 0.3, 0.3, 0.32, 0.31, 0.24, 0.15]
 )  # [m]
 theta_f = np.array([1.43, 1.35, 1.3, 1.25, 1.2, 1.15, 1.10, 1.05, 1.0, 0.95, 0.9])
 rpm = 981
@@ -34,6 +33,7 @@ n = rpm / 60
 omega = 2 * pi * n
 advanced_ratio = free_stream_velocity / (n * radius * 2)
 print(f"advanced ratio= {advanced_ratio}")
+print(r_hub)
 
 # calculation
 
@@ -75,17 +75,30 @@ for i in range(len(steps_vector + 1)):
     )
 
     # print(f"local thrust= {local_thrust}")
-
+    blade_thrust += dT * r_step
     total_thrust_coefficient = np.append(
         total_thrust_coefficient,
         blade_thrust / (rho * n**2 * (2 * radius) ** 4),
     )
+    print(total_thrust_coefficient)
 
 plt.figure(figsize=(10, 8))
 
 rs = np.array([0.2, 0.26, 0.36, 0.46, 0.55, 0.63, 0.71, 0.79, 0.87, 0.95, 1])
 ct = np.array(
-    [0.02, 0.024, 0.064, 0.136, 0.211, 0.291, 0.365, 0.427, 0.468, 0.435, 0.377]
+    [
+        0,
+        0.00016,
+        0.0012,
+        0.00396,
+        0.0084,
+        0.0145,
+        0.0215,
+        0.0285,
+        0.03427,
+        0.0369,
+        0.033,
+    ]
 )
 
 plt.subplot(2, 1, 1)

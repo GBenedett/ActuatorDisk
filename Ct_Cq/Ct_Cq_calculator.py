@@ -6,9 +6,9 @@ from math import atan, pi
 import numpy as np
 import pandas as pd
 
-from function_vel import convergence
-from initialization import init_calc
-from fplot import plot_function
+from fun_velocity_correction import velocity_correction
+from fun_initialization import init_calc
+from fun_plot import plot_function
 
 ## initializations
 thrust_coefficient = np.empty(61)
@@ -36,7 +36,7 @@ for v in range(1, int(v_max + 1)):
         a = 0.1
         b = 0.01
 
-        DtDr, DqDr, local_velocity = convergence(
+        DtDr, DqDr, local_velocity = velocity_correction(
             a, b, v, omega, rad, theta, rho, blade_numbers, chord
         )
 
