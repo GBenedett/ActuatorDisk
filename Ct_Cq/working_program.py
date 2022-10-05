@@ -8,12 +8,13 @@ from initialization import init_calc
 from velocity_correction import velocity_corr
 
 ## initializations
-total_thrust_coefficient = np.empty(61)
-total_torque_coefficent = np.empty(61)
-total_power_coefficient = np.empty(61)
-advanced_ratio = np.empty(61)
+total_thrust_coefficient = np.empty(101)
+total_torque_coefficent = np.empty(101)
+total_power_coefficient = np.empty(101)
+advanced_ratio = np.empty(101)
 efficiency = np.array([])
 local_thrust_coefficient = np.array([])
+local_torque_coefficient = np.array([])
 local_power_coefficient = np.array([])
 
 df = pd.read_csv("input_data.csv", skiprows=1)
@@ -48,7 +49,7 @@ for v in range(1, int(free_stream_velocity_max + 1)):
         a = 0.1
         b = 0.01
 
-        dT, dQ, dP, local_velocity = velocity_corr(
+        (dT, dQ, dP, local_velocity) = velocity_corr(
             v, a, b, omega, dr, theta, rho, blade_numbers, chord
         )
 
@@ -61,15 +62,19 @@ for v in range(1, int(free_stream_velocity_max + 1)):
         total_power_coefficient[v] = blade_power / (rho * n**3 * diameter**5)
         advanced_ratio[v] = v / (n * diameter)
 
-    local_thrust_coefficient = np.append(
-        local_thrust_coefficient, dT / (rho * n**2 * diameter**4)
-    )
+local_thrust_coefficient = np.append(
+    local_thrust_coefficient,
+    dT / (0.5 * rho * local_velocity**2 * 2 * pi * steps_vector),
+)
+local_torque_coefficient = np.append(
+    local_torque_coefficient,
+    dQ / (0.5 * rho * local_velocity**2 * 2 * pi * steps_vector**2),
+)
+local_power_coefficient = np.append(
+    local_power_coefficient,
+    dP / (0.5 * rho * local_velocity**3 * 2 * pi * steps_vector),
+)
 
-    print(local_thrust_coefficient)
-
-    local_power_coefficient = np.append(
-        local_power_coefficient, dP / (rho * n**2 * diameter**5)
-    )
 
 total_torque_coefficent = np.delete(total_torque_coefficent, 0)
 total_thrust_coefficient = np.delete(total_thrust_coefficient, 0)
@@ -93,6 +98,7 @@ plot_function(
     efficiency,
     advanced_ratio_max,
     local_thrust_coefficient,
+    local_torque_coefficient,
     local_power_coefficient,
     steps_vector,
     radius,

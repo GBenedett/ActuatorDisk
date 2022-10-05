@@ -18,6 +18,9 @@ def velocity_corr(
         cd = 0.008 - 0.003 * cl + 0.01 * cl**2
         local_velocity = sqrt(axial_velocity**2 + rotational_velocity**2)
 
+        # print(f"cl {cl}")
+        # print(f"cd {cd}")
+
         dT = (
             0.5
             * rho
