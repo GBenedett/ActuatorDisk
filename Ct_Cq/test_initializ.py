@@ -1,7 +1,7 @@
 import numpy as np
 from pytest import approx
 
-from initialization import init_calc
+from fun_initialization import init_calc
 
 
 def test_init():

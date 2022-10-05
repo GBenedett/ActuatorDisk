@@ -6,9 +6,9 @@ from math import atan, pi
 import numpy as np
 import pandas as pd
 
-from function_vel import convergence
-from initialization import init_calc
-from fplot import plot_function
+from fun_velocity_correction import velocity_correction
+from fun_initialization import init_calc
+from fun_plot import plot_function
 
 ## initializations
 thrust_coefficient = np.empty(61)
@@ -20,7 +20,7 @@ df = pd.read_csv("input_data.csv", skiprows=1)
 
 chord, pitch, diameter, rpm, rho, blade_numbers, v_max = df.iloc[:, 1]
 
-r_hub, r_tip, steps_vector, rstep, omega, n = init_calc(diameter, rpm)
+r_hub, r_tip, steps_vector, r_step, omega, n = init_calc(diameter, rpm)
 
 # velocity step
 for v in range(1, int(v_max + 1)):
@@ -36,14 +36,18 @@ for v in range(1, int(v_max + 1)):
         a = 0.1
         b = 0.01
 
-        DtDr, DqDr = convergence(a, b, v, omega, rad, theta, rho, blade_numbers, chord)
+        DtDr, DqDr, local_velocity = velocity_correction(
+            a, b, v, omega, rad, theta, rho, blade_numbers, chord
+        )
 
-        thrust += DtDr * rstep
-        torque += DqDr * rstep
+        thrust += DtDr * r_step
+        torque += DqDr * r_step
 
-    thrust_coefficient[v] = thrust / (rho * n**2 * diameter**4)
-    torque_coefficent[v] = torque / (rho * n**2 * diameter**5)
-    advanced_ratio[v] = v / (n * diameter)
+        thrust_coefficient[v] = thrust / (rho * n**2 * diameter**4)
+        torque_coefficent[v] = torque / (rho * n**2 * diameter**5)
+        advanced_ratio[v] = v / (n * diameter)
+
+        print(local_velocity)
 
 torque_coefficent = np.delete(torque_coefficent, 0)
 thrust_coefficient = np.delete(thrust_coefficient, 0)

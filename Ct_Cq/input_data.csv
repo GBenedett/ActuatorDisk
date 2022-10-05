@@ -1,9 +1,10 @@
 input
 parameters,values
 chord,0.1
-pitch,1
-diameter,1.6
-rpm,2100
+pitch_length,1
+radius,1
+rpm,1000
 rho,1.225
+n_steps,99
 blade_numbers,2
-v_max,60
+free_stream_velocity_max,100
