@@ -36,3 +36,8 @@ Saeed Farokhi, 2014, "Aircraft propulsion", second edition
 [https://www.researchgate.net/publication/352295621_A_method_for_preliminary_rotor_design_-_Part_1_Radially_Independent_Actuator_Disc_model]
 
 [https://www.researchgate.net/publication/230983950_A_Detailed_investigation_of_the_Blade_Element_Momentum_BEM_model_based_on_analytical_and_numerical_results_and_proposal_for_modifications_of_the_BEM_model]
+
+[https://journals.sagepub.com/doi/10.1177/1687814019865071]
+
+Design, Analysis, and Testing of a Scaled Propeller for an
+Innovative Regional Turboprop Aircraft Nicolosi
