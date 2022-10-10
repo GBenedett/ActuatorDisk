@@ -35,6 +35,8 @@ References
 
 [https://journals.sagepub.com/doi/10.1177/1687814019865071]
 
+[https://aerotoolbox.com/thrust-cruise-speed/]
+
 Andrea Poyer, "Methods for propeller simulation", FH Wiener Neustadt
 
 Saeed Farokhi, 2014, "Aircraft propulsion", second edition
