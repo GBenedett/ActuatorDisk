@@ -1,0 +1,39 @@
+# Automatic generated actuator disk input data file using the Optimal Propeller code.
+# Data file needed for the actuator disk VARIABLE_LOAD type.
+# The load distribution is obtained using the inviscid theory of the optimal propeller
+# using global data.
+#
+# The first three lines must be filled.
+# An example of this file can be found in the TestCases directory.
+#
+# Author: Ettore Saetta, Lorenzo Russo, Renato Tognaccini.
+# Theoretical and Applied Aerodynamic Research Group (TAARG),
+# University of Naples Federico II
+# -------------------------------------------------------------------------------------
+#
+MARKER_ACTDISK= 
+CENTER= 
+AXIS= 
+RADIUS= 0.24
+ADV_RATIO= 0.427
+NROW= 19
+# rs=r/R        dCT/drs       dCP/drs       dCR/drs
+  0.0526316     0.0005973     0.0003083     0.0
+  0.1052632     0.0038873     0.0020065     0.0
+  0.1578947     0.0099784     0.0051507     0.0
+  0.2105263     0.0176838     0.0091280     0.0
+  0.2631579     0.0260561     0.0134497     0.0
+  0.3157895     0.0346171     0.0178687     0.0
+  0.3684211     0.0431680     0.0222825     0.0
+  0.4210526     0.0516388     0.0266550     0.0
+  0.4736842     0.0600124     0.0309773     0.0
+  0.5263158     0.0682922     0.0352512     0.0
+  0.5789474     0.0764883     0.0394818     0.0
+  0.6315789     0.0846120     0.0436751     0.0
+  0.6842105     0.0926739     0.0478366     0.0
+  0.7368421     0.1006835     0.0519709     0.0
+  0.7894737     0.1086484     0.0560823     0.0
+  0.8421053     0.1165754     0.0601740     0.0
+  0.8947368     0.1244698     0.0642490     0.0
+  0.9473684     0.1323362     0.0683095     0.0
+  1.0000000     0.1401785     0.0723575     0.0

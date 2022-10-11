@@ -2,6 +2,7 @@ from math import atan2, cos, pi, sin, sqrt
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 local_thrust = np.array([])
 local_thrust_coefficient = np.array([])
@@ -9,145 +10,186 @@ alpha_f = np.array([])
 phi_f = np.array([])
 cd_f = np.array([])
 cl_f = np.array([])
-total_thrust_coefficient = np.array([])
+blades_thrust = 0.0
+blades_thrust_coefficent = 0.0
 
 # input
 
-radius = 2.52  # [m]
+df = pd.read_csv("prop1.csv")
+
+radius = 0.24  # [m]
 rho = 1.225  # [kg/m^3]
-free_stream_velocity = 231.5  # [m/s]
-n_step = 10
-chord_f = np.array(
-    [0.2, 0.22, 0.24, 0.26, 0.28, 0.3, 0.3, 0.32, 0.31, 0.24, 0.15]
-)  # [m]
-theta_f = np.array([1.43, 1.35, 1.3, 1.25, 1.2, 1.15, 1.10, 1.05, 1.0, 0.95, 0.9])
-rpm = 981
+adimensional_radius = df.iloc[:, 0]
+chord_radius_ratio = df.iloc[:, 1]
+theta = df.iloc[:, 2]
+n_step = len(adimensional_radius) - 1
+rpm = 3007
+total_thrust_coefficient = 0.068
+advanced_ratio = 0.427
+n = rpm / 60
+free_stream_velocity = advanced_ratio * n * 2 * radius
 blade_numbers = 2
 
+print(f"total_thrust_coefficient= {total_thrust_coefficient}")
+print(f"free_stream_velocity= {free_stream_velocity}")
+
 # prelimanary calculation
-r_hub = 0.2 * radius
-r_tip = radius
+r_hub = adimensional_radius[0] * radius
+r_tip = adimensional_radius[17] * radius
 r_step = (r_tip - r_hub) / n_step
-steps_vector = np.arange(r_hub, (r_tip + 0.01), r_step)
-n = rpm / 60
+
 omega = 2 * pi * n
-advanced_ratio = free_stream_velocity / (n * radius * 2)
+
 print(f"advanced ratio= {advanced_ratio}")
-print(r_hub)
 
 # calculation
 
-for i in range(len(steps_vector + 1)):
+for i in range(len(adimensional_radius)):
 
-    blade_thrust = 0.0
+    MAXITER = 1000
+    a = 0.1
+    b = 0.01
 
-    dr = steps_vector[i]
-    theta = theta_f[i]
-    chord = chord_f[i]
+    for _ in range(1, MAXITER + 1):
+        dr = adimensional_radius[i] * radius
+        theta_c = theta[i]
+        chord_c = chord_radius_ratio[i] * radius
+        axial_velocity = free_stream_velocity * (1 + a)
+        rotational_velocity = omega * dr * (1 - b)
 
-    axial_velocity = free_stream_velocity
-    rotational_velocity = omega * dr
-    phi = atan2(float(axial_velocity), float(rotational_velocity))
-    alpha = theta - phi
-    cl = 2 * pi * alpha
-    cd = 0.008 - 0.003 * cl + 0.01 * cl**2
-    local_velocity = sqrt(axial_velocity**2 + rotational_velocity**2)
-    dT = (
-        0.5
-        * rho
-        * local_velocity**2
-        * blade_numbers
-        * chord
-        * (cl * cos(phi) - cd * sin(phi))
-    )
+        phi_rad = atan2(float(axial_velocity), float(rotational_velocity))
+        phi = phi_rad * 180 / pi
+        alpha = theta_c - phi
+        cl = 2 * pi * (alpha * pi / 180)
+        cd = 0.008 - 0.003 * cl + 0.01 * cl**2
+        local_velocity = sqrt(axial_velocity**2 + rotational_velocity**2)
+
+        dT = (
+            0.5
+            * rho
+            * local_velocity**2
+            * blade_numbers
+            * chord_c
+            * ((cl * cos(phi_rad)) - (cd * sin(phi_rad)))
+        )
+
+        dQ = (
+            0.5
+            * rho
+            * local_velocity**2
+            * blade_numbers
+            * chord_c
+            * dr
+            * (cd * cos(phi) + cl * sin(phi))
+        )
+
+        axial_momentum = dT / (4 * pi * dr * rho * free_stream_velocity**2 * (1 + a))
+        angular_momentum = dQ / (
+            4 * pi * dr**3 * rho * free_stream_velocity * (1 + a) * omega
+        )
+
+        anew = 0.5 * (a + axial_momentum)
+        bnew = 0.5 * (b + angular_momentum)
+
+        if abs(anew - a) < 1e-5 and abs(bnew - b) < 1e-5:
+            break
+
+        a = anew
+        b = bnew
 
     phi_f = np.append(phi_f, phi)
     alpha_f = np.append(alpha_f, alpha)
-
     cd_f = np.append(cd_f, cd)
     cl_f = np.append(cl_f, cl)
-
     local_thrust = np.append(local_thrust, dT)
-
     local_thrust_coefficient = np.append(
         local_thrust_coefficient,
-        dT / (0.5 * rho * local_velocity**2 * 2 * pi * dr),
+        dT / (rho * n**2 * (2 * radius) ** 4),
     )
 
-    # print(f"local thrust= {local_thrust}")
-    blade_thrust += dT * r_step
-    total_thrust_coefficient = np.append(
-        total_thrust_coefficient,
-        blade_thrust / (rho * n**2 * (2 * radius) ** 4),
-    )
-    print(total_thrust_coefficient)
+    blades_thrust += dT * r_step
+
+print(f"free_stream_velovity_corrected= {axial_velocity}")
+
+total_thrust_coefficient_new = blades_thrust / (rho * n**2 * (2 * radius) ** 4)
+print(f"total_thrust_coefficient_new= {total_thrust_coefficient_new}")
 
 plt.figure(figsize=(10, 8))
 
-rs = np.array([0.2, 0.26, 0.36, 0.46, 0.55, 0.63, 0.71, 0.79, 0.87, 0.95, 1])
+# rs = np.array([0.2, 0.26, 0.36, 0.46, 0.55, 0.63, 0.71, 0.79, 0.87, 0.95, 1])
 ct = np.array(
     [
-        0,
-        0.00016,
-        0.0012,
-        0.00396,
-        0.0084,
-        0.0145,
-        0.0215,
-        0.0285,
-        0.03427,
-        0.0369,
-        0.033,
+        0.0008252,
+        0.0054180,
+        0.0140078,
+        0.0249331,
+        0.0368152,
+        0.0489288,
+        0.0609381,
+        0.0726705,
+        0.0839898,
+        0.0947232,
+        0.1046003,
+        0.1131831,
+        0.1197629,
+        0.1231991,
+        0.1216340,
+        0.1118740,
+        0.0873221,
+        0.0000000,
     ]
 )
 
+plt.plot(adimensional_radius, theta, label="theta")
+plt.xlabel("r/R")
+plt.ylabel("theta")
+plt.grid()
+plt.show()
+
+plt.plot(adimensional_radius, chord_radius_ratio, label="r/R")
+plt.xlabel("r/R")
+plt.ylabel("c/R")
+plt.grid()
+plt.show()
+
+plt.figure(figsize=(10, 8))
 plt.subplot(2, 1, 1)
-plt.plot(steps_vector / radius, local_thrust, label="T_loc")
-plt.plot(rs, ct * (0.5 * rho * local_velocity**2 * 2 * pi * dr), label="T_loc_Saetta")
+plt.plot(adimensional_radius, local_thrust, label="T_loc")
+plt.plot(
+    adimensional_radius,
+    ct * (rho * n**2 * (2 * radius) ** 4),
+    label="T_loc_Saetta",
+)
 plt.title("thrust(r) vs x/r")
 plt.xlabel("x/r")
 plt.ylabel("thrust")
 plt.legend()
-plt.grid()
+plt.grid(True)
 
 plt.subplot(2, 1, 2)
-plt.plot(steps_vector / radius, local_thrust_coefficient, label="Ct")
-plt.plot(rs, ct, label="Ct_Saetta")
+plt.plot(adimensional_radius, local_thrust_coefficient, label="Ct")
+plt.plot(adimensional_radius, ct, label="Ct_Saetta")
 plt.title("thrust_coefficient(r) vs x/r")
 plt.xlabel("x/r")
 plt.ylabel("thrust_coefficient")
 plt.legend()
-plt.grid()
+plt.grid(True)
 
 plt.tight_layout(pad=1)
 
 plt.show()
 
-plt.plot(steps_vector / radius, 180 * theta_f / pi, label="theta")
-plt.plot(steps_vector / radius, 180 * alpha_f / pi, label="alpha")
-plt.plot(steps_vector / radius, 180 * phi_f / pi, label="phi")
-plt.title("angles")
-plt.xlabel("dr")
-plt.ylabel("theta, alpha, phi")
-plt.grid()
+plt.plot(adimensional_radius, phi_f, label="phi")
+plt.plot(adimensional_radius, alpha_f, label="alpha")
+plt.plot(adimensional_radius, theta, label="theta")
 plt.legend()
+plt.grid(True)
+
 plt.show()
 
-color = "grey"
-plt.plot(steps_vector / radius, chord_f, color)
-plt.plot(steps_vector / radius, -(chord_f), color)
-plt.title("chord function")
-plt.xlabel("dr")
-plt.ylabel("chord")
-plt.ylim(-0.9, 0.9)
-plt.grid()
-plt.show()
-
-plt.plot(steps_vector / radius, cd_f, label="cd")
-plt.plot(steps_vector / radius, cl_f, label="cl")
-plt.title("cd and cl vs dr")
-plt.xlabel("dr")
-plt.ylabel("cd and cl")
-plt.grid()
+plt.plot(adimensional_radius, cl_f, label="cl")
+plt.plot(adimensional_radius, cd_f, label="cd")
 plt.legend()
+plt.grid(True)
+
 plt.show()
