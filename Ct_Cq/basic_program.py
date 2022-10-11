@@ -2,7 +2,8 @@ from math import atan2, cos, pi, sin, sqrt
 
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
+
+# import pandas as pd
 
 local_thrust = np.array([])
 local_thrust_coefficient = np.array([])
@@ -15,27 +16,54 @@ blades_thrust_coefficent = 0.0
 
 # input
 
-df = pd.read_csv("prop1.csv")
+with open("prop2.txt", "r") as f:
+    lines = f.readlines()
 
-radius = 0.24  # [m]
-rho = 1.225  # [kg/m^3]
-adimensional_radius = df.iloc[:, 0]
-chord_radius_ratio = df.iloc[:, 1]
-theta = df.iloc[:, 2]
-n_step = len(adimensional_radius) - 1
-rpm = 3007
-total_thrust_coefficient = 0.068
-advanced_ratio = 0.427
-n = rpm / 60
-free_stream_velocity = advanced_ratio * n * 2 * radius
+    # for line in lines:
+    #    if line.startswith("radius"):
+    #        radius = f.read(6)
+    #    if line.startswith("rpm"):
+    #        rpm = f.read(1)
+    #    if line.startswith("blades_number"):
+    #        blades_number = f.read(2)
+    #    if line.startswith("advanced_ratio"):
+    #        advanced_ratio = f.read(3)
+    #    if line.startswith("total_thrust_coefficient"):
+    #        total_thrust_coefficient = f.read(4)
+    # print(radius)
+
+adimensional_radius = []
+for line in lines[3:]:
+    r_R, c_R, beta = line.split()
+    adimensional_radius.append(float(r_R))
+
+chord_radius_ratio = []
+for line in lines[3:]:
+    r_R, c_R, beta = line.split()
+    chord_radius_ratio.append(float(c_R))
+
+theta = []
+for line in lines[3:]:
+    r_R, c_R, beta = line.split()
+    theta.append(float(beta))
+
+radius = 1.5
+rpm = 1800
 blade_numbers = 2
+free_stream_velocity = 55
+# total_thrust_coefficient =
+RHO = 1.225
 
-print(f"total_thrust_coefficient= {total_thrust_coefficient}")
-print(f"free_stream_velocity= {free_stream_velocity}")
+n_step = len(adimensional_radius) - 1
+n = rpm / 60
+advanced_ratio = free_stream_velocity / (n * 2 * radius)
+
+# print(f"total_thrust_coefficient= {total_thrust_coefficient}")
+# print(f"advanced_ratio= {advanced_ratio}")
 
 # prelimanary calculation
-r_hub = adimensional_radius[0] * radius
-r_tip = adimensional_radius[17] * radius
+r_hub = adimensional_radius[1] * radius
+r_tip = adimensional_radius[-1] * radius
 r_step = (r_tip - r_hub) / n_step
 
 omega = 2 * pi * n
@@ -66,7 +94,7 @@ for i in range(len(adimensional_radius)):
 
         dT = (
             0.5
-            * rho
+            * RHO
             * local_velocity**2
             * blade_numbers
             * chord_c
@@ -75,7 +103,7 @@ for i in range(len(adimensional_radius)):
 
         dQ = (
             0.5
-            * rho
+            * RHO
             * local_velocity**2
             * blade_numbers
             * chord_c
@@ -83,9 +111,9 @@ for i in range(len(adimensional_radius)):
             * (cd * cos(phi) + cl * sin(phi))
         )
 
-        axial_momentum = dT / (4 * pi * dr * rho * free_stream_velocity**2 * (1 + a))
+        axial_momentum = dT / (4 * pi * dr * RHO * free_stream_velocity**2 * (1 + a))
         angular_momentum = dQ / (
-            4 * pi * dr**3 * rho * free_stream_velocity * (1 + a) * omega
+            4 * pi * dr**3 * RHO * free_stream_velocity * (1 + a) * omega
         )
 
         anew = 0.5 * (a + axial_momentum)
@@ -104,14 +132,15 @@ for i in range(len(adimensional_radius)):
     local_thrust = np.append(local_thrust, dT)
     local_thrust_coefficient = np.append(
         local_thrust_coefficient,
-        dT / (rho * n**2 * (2 * radius) ** 4),
+        dT / (RHO * n**2 * (2 * radius) ** 4),
     )
 
     blades_thrust += dT * r_step
-
+drag = cd
+print(f"thrust= {blades_thrust}")
 print(f"free_stream_velovity_corrected= {axial_velocity}")
 
-total_thrust_coefficient_new = blades_thrust / (rho * n**2 * (2 * radius) ** 4)
+total_thrust_coefficient_new = blades_thrust / (RHO * n**2 * (2 * radius) ** 4)
 print(f"total_thrust_coefficient_new= {total_thrust_coefficient_new}")
 
 plt.figure(figsize=(10, 8))
@@ -119,23 +148,13 @@ plt.figure(figsize=(10, 8))
 # rs = np.array([0.2, 0.26, 0.36, 0.46, 0.55, 0.63, 0.71, 0.79, 0.87, 0.95, 1])
 ct = np.array(
     [
-        0.0008252,
-        0.0054180,
-        0.0140078,
-        0.0249331,
-        0.0368152,
-        0.0489288,
-        0.0609381,
-        0.0726705,
-        0.0839898,
-        0.0947232,
-        0.1046003,
-        0.1131831,
-        0.1197629,
-        0.1231991,
-        0.1216340,
-        0.1118740,
-        0.0873221,
+        0.0012927,
+        0.0056399,
+        0.0107330,
+        0.0155190,
+        0.0194979,
+        0.0218202,
+        0.0203772,
         0.0000000,
     ]
 )
@@ -157,7 +176,7 @@ plt.subplot(2, 1, 1)
 plt.plot(adimensional_radius, local_thrust, label="T_loc")
 plt.plot(
     adimensional_radius,
-    ct * (rho * n**2 * (2 * radius) ** 4),
+    ct * (RHO * n**2 * (2 * radius) ** 4),
     label="T_loc_Saetta",
 )
 plt.title("thrust(r) vs x/r")

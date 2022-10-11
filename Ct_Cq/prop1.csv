@@ -1,3 +1,6 @@
+radius,  rho,    rpm, blade_numbers, advanced_ratio, total_thrust_coefficient
+0.24,   1.225,   3007,   2,                 0.427,      0.0627
+
 r/R ,   c/R ,    beta
 0.15,   0.112,   42.88
 0.20,   0.126,   42.88
