@@ -1,3 +1,4 @@
+from macpath import split
 from math import atan2, cos, pi, sin, sqrt
 
 import matplotlib.pyplot as plt
@@ -14,23 +15,10 @@ cl_f = np.array([])
 blades_thrust = 0.0
 blades_thrust_coefficent = 0.0
 
-# input
+# read files
 
-with open("prop2.txt", "r") as f:
+with open("prop2opt.txt", "r") as f:
     lines = f.readlines()
-
-    # for line in lines:
-    #    if line.startswith("radius"):
-    #        radius = f.read(6)
-    #    if line.startswith("rpm"):
-    #        rpm = f.read(1)
-    #    if line.startswith("blades_number"):
-    #        blades_number = f.read(2)
-    #    if line.startswith("advanced_ratio"):
-    #        advanced_ratio = f.read(3)
-    #    if line.startswith("total_thrust_coefficient"):
-    #        total_thrust_coefficient = f.read(4)
-    # print(radius)
 
 adimensional_radius = []
 for line in lines[3:]:
@@ -47,21 +35,16 @@ for line in lines[3:]:
     r_R, c_R, beta = line.split()
     theta.append(float(beta))
 
-radius = 1.5
-rpm = 1800
-blade_numbers = 2
-free_stream_velocity = 55
-# total_thrust_coefficient =
-RHO = 1.225
+with open("settings_prop2.txt", "r") as f:
+    input_data = f.read().splitlines()
+    data = [i.split()[2] for i in input_data[2:] if any(j.isnumeric() for j in i)]
+    data = [float(x) for x in data]
+    radius, rpm, blades_number, free_stream_velocity, RHO = data[0:]
 
+# prelimanary calculation
 n_step = len(adimensional_radius) - 1
 n = rpm / 60
 advanced_ratio = free_stream_velocity / (n * 2 * radius)
-
-# print(f"total_thrust_coefficient= {total_thrust_coefficient}")
-# print(f"advanced_ratio= {advanced_ratio}")
-
-# prelimanary calculation
 r_hub = adimensional_radius[1] * radius
 r_tip = adimensional_radius[-1] * radius
 r_step = (r_tip - r_hub) / n_step
@@ -96,7 +79,7 @@ for i in range(len(adimensional_radius)):
             0.5
             * RHO
             * local_velocity**2
-            * blade_numbers
+            * blades_number
             * chord_c
             * ((cl * cos(phi_rad)) - (cd * sin(phi_rad)))
         )
@@ -105,7 +88,7 @@ for i in range(len(adimensional_radius)):
             0.5
             * RHO
             * local_velocity**2
-            * blade_numbers
+            * blades_number
             * chord_c
             * dr
             * (cd * cos(phi) + cl * sin(phi))
@@ -140,12 +123,11 @@ drag = cd
 print(f"thrust= {blades_thrust}")
 print(f"free_stream_velovity_corrected= {axial_velocity}")
 
-total_thrust_coefficient_new = blades_thrust / (RHO * n**2 * (2 * radius) ** 4)
-print(f"total_thrust_coefficient_new= {total_thrust_coefficient_new}")
+total_thrust_coefficient = blades_thrust / (RHO * n**2 * (2 * radius) ** 4)
+print(f"total_thrust_coefficient= {total_thrust_coefficient}")
 
 plt.figure(figsize=(10, 8))
 
-# rs = np.array([0.2, 0.26, 0.36, 0.46, 0.55, 0.63, 0.71, 0.79, 0.87, 0.95, 1])
 ct = np.array(
     [
         0.0012927,
@@ -168,6 +150,7 @@ plt.show()
 plt.plot(adimensional_radius, chord_radius_ratio, label="r/R")
 plt.xlabel("r/R")
 plt.ylabel("c/R")
+plt.ylim(0, 0.5)
 plt.grid()
 plt.show()
 
