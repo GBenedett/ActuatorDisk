@@ -2,64 +2,72 @@ import matplotlib.pyplot as plt
 
 
 def plot_function(
-    advanced_ratio,
-    total_thrust_coefficient,
-    total_torque_coefficent,
-    total_power_coefficient,
-    thrust_max,
-    efficiency,
-    advanced_ratio_max,
+    adimensional_radius,
+    theta,
+    chord_radius_ratio,
+    local_thrust,
+    ct,
+    RHO,
+    n,
     local_thrust_coefficient,
-    local_torque_coefficient,
-    local_power_coefficient,
-    steps_vector,
+    phi_f,
+    alpha_f,
+    cl_f,
+    cd_f,
     radius,
 ):
 
-    plt.figure(figsize=(13, 7))
+    plt.plot(adimensional_radius, theta, label="theta")
+    plt.xlabel("r/R")
+    plt.ylabel("theta")
+    plt.grid()
+    plt.show()
 
-    plt.subplot(2, 3, 1)
-    plt.suptitle(
-        "Thrust, torque, power coefficient and propeller efficiency",
-        fontweight="bold",
-        size=13,
+    plt.plot(adimensional_radius, chord_radius_ratio, label="r/R")
+    plt.xlabel("r/R")
+    plt.ylabel("c/R")
+    plt.ylim(0, 0.5)
+    plt.grid()
+    plt.show()
+
+    plt.figure(figsize=(10, 8))
+
+    plt.subplot(2, 1, 1)
+    plt.plot(adimensional_radius, local_thrust, label="T_loc")
+    plt.plot(
+        adimensional_radius,
+        ct * (RHO * n**2 * (2 * radius) ** 4),
+        label="T_loc_Saetta",
     )
-    plt.plot(advanced_ratio, total_thrust_coefficient, label="Ct")
-    plt.plot(advanced_ratio, total_torque_coefficent, label="Cq")
-    plt.plot(advanced_ratio, total_power_coefficient, label="Cp")
-    plt.xlim(0, 0.7)
-    plt.ylim(0, 1.1 * thrust_max)
-    plt.title("Thrust torque and power coefficients vs advanced ratio")
-    plt.xlabel("Advance Ratio (J)")
-    plt.ylabel("Ct, Cq, Cp")
+    plt.title("thrust(r) vs x/r")
+    plt.xlabel("x/r")
+    plt.ylabel("thrust")
     plt.legend()
+    plt.grid(True)
 
-    plt.subplot(2, 3, 2)
-    plt.plot(advanced_ratio, efficiency)
-    plt.title("Propeller Efficiency")
-    plt.xlabel("Advance Ratio (J)")
-    plt.ylabel("Efficiency")
-    plt.xlim(0, 0.7)
-    plt.ylim(0, 1)
-
-    plt.subplot(2, 3, 4)
-    plt.plot(steps_vector / radius, local_thrust_coefficient)
-    plt.title("local thrust coefficient vs x/r")
+    plt.subplot(2, 1, 2)
+    plt.plot(adimensional_radius, local_thrust_coefficient, label="Ct")
+    plt.plot(adimensional_radius, ct, label="Ct_Saetta")
+    plt.title("thrust_coefficient(r) vs x/r")
     plt.xlabel("x/r")
-    plt.ylabel("local thrust coefficient")
+    plt.ylabel("thrust_coefficient")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
 
-    plt.subplot(2, 3, 5)
-    plt.plot(steps_vector / radius, local_torque_coefficient)
-    plt.title("local torque coefficient vs x/r")
-    plt.xlabel("x/r")
-    plt.ylabel("local torque coefficient")
+    plt.tight_layout(pad=1)
 
-    plt.subplot(2, 3, 6)
-    plt.plot(steps_vector / radius, local_power_coefficient)
-    plt.title("local power coefficient(r) vs x/r")
-    plt.xlabel("x/r")
-    plt.ylabel("local power coefficient")
+    plt.plot(adimensional_radius, phi_f, label="phi")
+    plt.plot(adimensional_radius, alpha_f, label="alpha")
+    plt.plot(adimensional_radius, theta, label="theta")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
 
-    plt.tight_layout(pad=1.2)
+    plt.plot(adimensional_radius, cl_f, label="cl")
+    plt.plot(adimensional_radius, cd_f, label="cd")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
 
     return plt.show()
