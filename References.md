@@ -37,6 +37,8 @@ References
 
 [https://aerotoolbox.com/thrust-cruise-speed/]
 
+[https://pybemt.readthedocs.io/en/latest/]
+
 Andrea Poyer, "Methods for propeller simulation", FH Wiener Neustadt
 
 Saeed Farokhi, 2014, "Aircraft propulsion", second edition
