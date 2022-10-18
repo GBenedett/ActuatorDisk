@@ -39,6 +39,8 @@ References
 
 [https://pybemt.readthedocs.io/en/latest/]
 
+[https://www.trylam.com/files/ARO-103L_tlam_Week2.pdf]
+
 Andrea Poyer, "Methods for propeller simulation", FH Wiener Neustadt
 
 Saeed Farokhi, 2014, "Aircraft propulsion", second edition
