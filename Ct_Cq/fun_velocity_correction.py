@@ -4,10 +4,10 @@ from math import atan2, cos, pi, sin, sqrt
 
 
 def velocity_correction(
-    dr, theta_c, free_stream_velocity, omega, RHO, blades_number, chord_c
+    dr, theta_c, free_stream_velocity, omega, RHO, blades_number, chord_c, cl
 ):
 
-    MAXITER = 500
+    MAXITER = 1000
     a = 0.1
     b = 0.01
 
@@ -19,7 +19,7 @@ def velocity_correction(
         phi_rad = atan2(float(axial_velocity), float(rotational_velocity))
         phi = phi_rad * 180 / pi
         alpha = theta_c - phi
-        cl = 2 * pi * (alpha * pi / 180)
+        # cl = 2 * pi * (alpha * pi / 180)
         cd = 0.008 - 0.003 * cl + 0.01 * cl**2
         local_velocity = sqrt(axial_velocity**2 + rotational_velocity**2)
 
@@ -30,6 +30,7 @@ def velocity_correction(
             * blades_number
             * chord_c
             * ((cl * cos(phi_rad)) - (cd * sin(phi_rad)))
+            * dr
         )
 
         dQ = (
@@ -40,6 +41,7 @@ def velocity_correction(
             * chord_c
             * dr
             * (cd * cos(phi) + cl * sin(phi))
+            * dr
         )
 
         axial_momentum = dT / (4 * pi * dr * RHO * free_stream_velocity**2 * (1 + a))

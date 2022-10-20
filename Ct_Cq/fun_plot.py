@@ -17,7 +17,7 @@ def plot_function(
     radius,
 ):
 
-    plt.plot(adimensional_radius, theta, label="theta")
+    """plt.plot(adimensional_radius, theta, label="theta")
     plt.xlabel("r/R")
     plt.ylabel("theta")
     plt.grid()
@@ -30,7 +30,7 @@ def plot_function(
     plt.grid()
     plt.show()
 
-    plt.figure(figsize=(10, 8))
+    plt.figure(figsize=(10, 8))"""
 
     plt.subplot(2, 1, 1)
     plt.plot(adimensional_radius, local_thrust, label="T_loc")
@@ -53,17 +53,19 @@ def plot_function(
     plt.ylabel("thrust_coefficient")
     plt.legend()
     plt.grid(True)
+    plt.tight_layout(pad=1)
     plt.show()
 
+    plt.figure(figsize=(11, 8.2))
     plt.tight_layout(pad=1)
-
+    plt.subplot(2, 1, 1)
     plt.plot(adimensional_radius, phi_f, label="phi")
     plt.plot(adimensional_radius, alpha_f, label="alpha")
     plt.plot(adimensional_radius, theta, label="theta")
     plt.legend()
     plt.grid(True)
-    plt.show()
 
+    plt.subplot(2, 1, 2)
     plt.plot(adimensional_radius, cl_f, label="cl")
     plt.plot(adimensional_radius, cd_f, label="cd")
     plt.legend()

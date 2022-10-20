@@ -1,0 +1,7 @@
+settings file propeller 1
+
+radius = 0.24
+rpm = 3007
+blades_number = 2
+free_stream_velocity = 10.27
+RHO = 1.225

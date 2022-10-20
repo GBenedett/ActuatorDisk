@@ -1,0 +1,7 @@
+settings file propeller confront
+
+radius = 0.127
+rpm = 3008
+blades_number = 2
+free_stream_velocity = 2.445
+RHO = 1.225
