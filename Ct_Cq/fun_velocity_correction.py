@@ -1,48 +1,52 @@
 # velocity correction
 
-from math import atan2, cos, sin, sqrt, pi
-
-MAXITER = 500
+from math import atan2, cos, pi, sin, sqrt
 
 
 def velocity_correction(
-    free_stream_velocity, a, b, omega, dr, theta, rho, blade_numbers, chord
+    dr, theta_c, free_stream_velocity, omega, RHO, blades_number, chord_c, cl
 ):
 
+    MAXITER = 1000
+    a = 0.1
+    b = 0.01
+
     for _ in range(1, MAXITER + 1):
+
         axial_velocity = free_stream_velocity * (1 + a)
         rotational_velocity = omega * dr * (1 - b)
-        phi = atan2(float(axial_velocity), float(rotational_velocity))
-        alpha = theta - phi
-        cl = 6.2 * alpha
+
+        phi_rad = atan2(float(axial_velocity), float(rotational_velocity))
+        phi = phi_rad * 180 / pi
+        alpha = theta_c - phi
+        # cl = 2 * pi * (alpha * pi / 180)
         cd = 0.008 - 0.003 * cl + 0.01 * cl**2
         local_velocity = sqrt(axial_velocity**2 + rotational_velocity**2)
 
-        # print(f"cl {cl}")
-        # print(f"cd {cd}")
-
         dT = (
             0.5
-            * rho
+            * RHO
             * local_velocity**2
-            * blade_numbers
-            * chord
-            * (cl * cos(phi) - cd * sin(phi))
+            * blades_number
+            * chord_c
+            * ((cl * cos(phi_rad)) - (cd * sin(phi_rad)))
+            * dr
         )
+
         dQ = (
             0.5
-            * rho
+            * RHO
             * local_velocity**2
-            * blade_numbers
-            * chord
+            * blades_number
+            * chord_c
             * dr
             * (cd * cos(phi) + cl * sin(phi))
+            * dr
         )
-        dP = dT * local_velocity
 
-        axial_momentum = dT / (4 * pi * dr * rho * free_stream_velocity**2 * (1 + a))
+        axial_momentum = dT / (4 * pi * dr * RHO * free_stream_velocity**2 * (1 + a))
         angular_momentum = dQ / (
-            4 * pi * dr**3 * rho * free_stream_velocity * (1 + a) * omega
+            4 * pi * dr**3 * RHO * free_stream_velocity * (1 + a) * omega
         )
 
         anew = 0.5 * (a + axial_momentum)
@@ -54,4 +58,4 @@ def velocity_correction(
         a = anew
         b = bnew
 
-    return dT, dQ, dP, local_velocity
+    return dT, local_velocity, phi, alpha, cl, cd, axial_velocity
