@@ -49,7 +49,7 @@ with open("settings_propreal.txt", "r") as f:
 
 
 # prelimanary calculation
-n_step = len(adimensional_radius) - 1
+n_step = len(adimensional_radius)
 n = rpm / 60
 advanced_ratio = free_stream_velocity / (n * 2 * radius)
 r_hub = adimensional_radius[1] * radius

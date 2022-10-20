@@ -51,7 +51,7 @@ with open("settings_propreal.txt", "r") as f:
 #    ct.append(float(ct_confr))
 
 # prelimanary calculation
-n_step = len(adimensional_radius) - 1
+n_step = len(adimensional_radius)
 n = rpm / 60
 advanced_ratio = free_stream_velocity / (n * 2 * radius)
 r_hub = adimensional_radius[1] * radius
@@ -102,6 +102,7 @@ for i in range(len(adimensional_radius)):
     # cl = 2 * pi * (alpha * pi / 180)
     cd = 0.008 - 0.003 * cl + 0.01 * cl**2
     local_velocity = sqrt(axial_velocity**2 + rotational_velocity**2)
+    print(local_velocity)
     dT = (
         0.5
         * RHO
@@ -117,6 +118,7 @@ for i in range(len(adimensional_radius)):
     cd_f = np.append(cd_f, cd)
     cl_f = np.append(cl_f, cl)
     local_thrust = np.append(local_thrust, dT)
+
     local_thrust_coefficient = np.append(
         local_thrust_coefficient,
         dT / (RHO * n**2 * (2 * radius) ** 4),
@@ -132,26 +134,26 @@ plt.figure(figsize=(10, 8))
 
 ct = np.array(
     [
-        0.0009154,
-        0.0073647,
-        0.0250697,
-        0.0600368,
-        0.1185056,
-        0.2067423,
-        0.3307191,
-        0.4957460,
-        0.7061158,
-        0.9647919,
-        1.2731082,
-        1.6303661,
-        2.0330723,
-        2.4732985,
-        2.9350767,
-        3.3863788,
-        3.7605023,
-        3.9083590,
-        3.4447461,
-        0.0000000,
+        0.0009043,
+        0.0072734,
+        0.0247512,
+        0.0592727,
+        0.1170596,
+        0.2044887,
+        0.3278528,
+        0.4930604,
+        0.7053310,
+        0.9689362,
+        1.2870211,
+        1.6615208,
+        2.0931698,
+        2.5815871,
+        3.1254179,
+        3.7225050,
+        4.3700732,
+        5.0649068,
+        5.8035126,
+        6.5822598,
     ]
 )
 
